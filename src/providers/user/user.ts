@@ -4,7 +4,6 @@ import {
   FirebaseListObservable
 } from "angularfire2/database-deprecated";
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { User } from "../../models/user.model";
 
@@ -12,10 +11,16 @@ import { User } from "../../models/user.model";
 export class UserProvider {
   private dbPath: string = "/user";
 
-  users: FirebaseListObservable<User[]> = null;
+  users: FirebaseListObservable<User[]>;
 
-  constructor(public http: Http, public db: AngularFireDatabase) {
+  constructor(public db: AngularFireDatabase) {
     this.users = this.getUsersList();
+  }
+
+  getUsersList(query = {}): FirebaseListObservable<User[]> {
+    return this.db.list(this.dbPath, {
+      query: query
+    });
   }
 
   getUser(key: string): FirebaseObjectObservable<User> {
@@ -34,12 +39,6 @@ export class UserProvider {
 
   deleteUser(key: string): Promise<void> {
     return this.users.remove(key).catch(error => this.handleError(error));
-  }
-
-  getUsersList(query = {}): FirebaseListObservable<User[]> {
-    return this.db.list(this.dbPath, {
-      query: query
-    });
   }
 
   deleteAll(): Promise<void> {

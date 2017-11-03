@@ -1,3 +1,4 @@
+import { UsersPage } from '../users/users';
 import { SignupPage } from "./../signup/signup";
 import { Component } from "@angular/core";
 import { NavController } from "ionic-angular";
@@ -16,5 +17,9 @@ export class HomePage {
 
   signup() {
     this.navCtrl.push(SignupPage);  
+  }
+
+  users() {
+    this.navCtrl.push(UsersPage);
   }
 }

@@ -1,3 +1,5 @@
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { UsersPage } from '../pages/users/users';
 import {  AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -28,21 +30,24 @@ export const firebaseAppConfig: FirebaseAppConfig = {
     MyApp,
     HomePage,
     LoginPage,
-    SignupPage
+    SignupPage,
+    UsersPage
   ],
   imports: [
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseAppConfig),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    AngularFireAuthModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
     LoginPage,
-    SignupPage
+    SignupPage,
+    UsersPage
   ],
   providers: [
     StatusBar,

@@ -1,3 +1,4 @@
+import { UsersPage } from './../users/users';
 import { Component } from "@angular/core";
 import { NavController, NavParams } from "ionic-angular";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -35,7 +36,8 @@ export class SignupPage {
   onSubmit(e) {
     e.preventDefault();
     this.userProvider.createUser(this.signupForm.value).then((res) => {
-      console.log('Usuário cadastrado com sucesso!');
+      console.log('Usuário cadastrado com sucesso!', res);
+      this.navCtrl.push(UsersPage);
     });
   }
 }
