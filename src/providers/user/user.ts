@@ -27,8 +27,8 @@ export class UserProvider {
     return this.db.object(`${this.dbPath}/${key}`);
   }
 
-  createUser(user: User): any {
-    return this.users.push(user);
+  createUser(key: string, user: User): Promise<void> {
+    return this.getUser(key).set(user);
   }
 
   updateUser(key: string, value: any): Promise<void> {

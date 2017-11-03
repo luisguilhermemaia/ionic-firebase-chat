@@ -1,4 +1,5 @@
-import { UsersPage } from './../users/users';
+import { AuthProvider } from "./../../providers/auth/auth";
+import { UsersPage } from "./../users/users";
 import { Component } from "@angular/core";
 import { NavController, NavParams } from "ionic-angular";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -15,7 +16,8 @@ export class SignupPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
-    public userProvider: UserProvider
+    public userProvider: UserProvider,
+    public authProvider: AuthProvider
   ) {
     let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -35,9 +37,18 @@ export class SignupPage {
 
   onSubmit(e) {
     e.preventDefault();
-    this.userProvider.createUser(this.signupForm.value).then((res) => {
-      console.log('Usuário cadastrado com sucesso!', res);
-      this.navCtrl.push(UsersPage);
-    });
+
+    let formUser = this.signupForm.value;
+
+    return this.authProvider
+      .createAuthUser(formUser)
+      .then(authState => {
+        delete formUser.password;
+        return this.userProvider.createUser(authState.uid, formUser);
+      })
+      .then(res => {
+        console.log("Usuário cadastrado com sucesso!");
+        return this.navCtrl.push(UsersPage);
+      });
   }
 }
