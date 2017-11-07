@@ -91,7 +91,8 @@ export class SignupPage {
   checkUsername() {
     this.userProvider
       .userExists(this.usernameText)
-      .map(user => user.length > 0)
-      .subscribe(bool => (this.usernameAvailable = !bool));
+      .subscribe(
+        (userExists: boolean) => (this.usernameAvailable = !userExists)
+      );
   }
 }

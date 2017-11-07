@@ -2,15 +2,15 @@ import { UserProvider } from "../../providers/user/user";
 import { Component } from "@angular/core";
 import { NavController, NavParams } from "ionic-angular";
 import { User } from "../../models/user.model";
-import { FirebaseListObservable } from "angularfire2/database-deprecated";
 import { AngularFireList } from 'angularfire2/database/interfaces';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: "page-users",
   templateUrl: "users.html"
 })
 export class UsersPage {
-  users: AngularFireList<User[]>;
+  users: Observable<User[]>;
 
   constructor(
     public navCtrl: NavController,
@@ -19,7 +19,7 @@ export class UsersPage {
   ) {}
 
   ionViewDidLoad() {
-    this.users = this.userProvider.users;
+    this.users = this.userProvider.users.valueChanges();
   }
 
   onChatCreate(user) {

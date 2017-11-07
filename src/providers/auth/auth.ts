@@ -1,4 +1,3 @@
-import { User } from './../../models/user.model';
 import { UserCredentials } from '../../models/user.model';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';

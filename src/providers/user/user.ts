@@ -1,10 +1,13 @@
-import { AngularFireList, AngularFireObject } from 'angularfire2/database/interfaces';
+import {
+  AngularFireList,
+  AngularFireObject
+} from "angularfire2/database/interfaces";
 import { BaseProvider } from "../base/base";
 import { AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from "@angular/core";
-import 'rxjs/add/operator/map';
+import "rxjs/add/operator/map";
 import { User } from "../../models/user.model";
-import { Observable } from 'rxjs';
+import { Observable } from "rxjs";
 
 @Injectable()
 export class UserProvider extends BaseProvider {
@@ -22,10 +25,14 @@ export class UserProvider extends BaseProvider {
   }
 
   createUser(user) {
-    return this.users.push(user);
+    return this.db.list(this.dbPath).push(user);
   }
 
-  userExists(username: string): Observable<User[]>{
-    return this.db.list(this.dbPath, ref => ref.orderByChild('username').equalTo(username)).valueChanges();
+  userExists(username: string): Observable<Boolean> {
+    return this.db
+      .list(this.dbPath, ref => ref.orderByChild("username").equalTo(username))
+      .valueChanges()
+      .map(user => user.length > 0)
+      .catch(this.handleObservableError);
   }
 }
