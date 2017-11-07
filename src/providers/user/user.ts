@@ -1,51 +1,31 @@
-import {
-  AngularFireDatabase,
-  FirebaseObjectObservable,
-  FirebaseListObservable
-} from "angularfire2/database-deprecated";
+import { AngularFireList, AngularFireObject } from 'angularfire2/database/interfaces';
+import { BaseProvider } from "../base/base";
+import { AngularFireDatabase } from "angularfire2/database";
 import { Injectable } from "@angular/core";
-import "rxjs/add/operator/map";
+import 'rxjs/add/operator/map';
 import { User } from "../../models/user.model";
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class UserProvider {
-  private dbPath: string = "/user";
+export class UserProvider extends BaseProvider {
+  private dbPath: string = "user";
 
-  users: FirebaseListObservable<User[]>;
+  users: AngularFireList<User[]>;
 
   constructor(public db: AngularFireDatabase) {
-    this.users = this.getUsersList();
+    super();
+    this.users = db.list(this.dbPath);
   }
 
-  getUsersList(query = {}): FirebaseListObservable<User[]> {
-    return this.db.list(this.dbPath, {
-      query: query
-    });
-  }
-
-  getUser(key: string): FirebaseObjectObservable<User> {
+  getUser(key: string): AngularFireObject<User> {
     return this.db.object(`${this.dbPath}/${key}`);
   }
 
-  createUser(key: string, user: User): Promise<void> {
-    return this.getUser(key).set(user);
+  createUser(user) {
+    return this.users.push(user);
   }
 
-  updateUser(key: string, value: any): Promise<void> {
-    return this.users
-      .update(key, value)
-      .catch(error => this.handleError(error));
-  }
-
-  deleteUser(key: string): Promise<void> {
-    return this.users.remove(key).catch(error => this.handleError(error));
-  }
-
-  deleteAll(): Promise<void> {
-    return this.users.remove().catch(error => this.handleError(error));
-  }
-
-  private handleError(error) {
-    console.log(error);
+  userExists(username: string): Observable<User[]>{
+    return this.db.list(this.dbPath, ref => ref.orderByChild('username').equalTo(username)).valueChanges();
   }
 }

@@ -3,13 +3,14 @@ import { Component } from "@angular/core";
 import { NavController, NavParams } from "ionic-angular";
 import { User } from "../../models/user.model";
 import { FirebaseListObservable } from "angularfire2/database-deprecated";
+import { AngularFireList } from 'angularfire2/database/interfaces';
 
 @Component({
   selector: "page-users",
   templateUrl: "users.html"
 })
 export class UsersPage {
-  users: FirebaseListObservable<User[]>;
+  users: AngularFireList<User[]>;
 
   constructor(
     public navCtrl: NavController,
@@ -18,7 +19,7 @@ export class UsersPage {
   ) {}
 
   ionViewDidLoad() {
-    this.users = this.userProvider.getUsersList();
+    this.users = this.userProvider.users;
   }
 
   onChatCreate(user) {

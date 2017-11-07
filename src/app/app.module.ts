@@ -1,21 +1,21 @@
-import { AngularFireAuthModule } from 'angularfire2/auth';
 import { UsersPage } from '../pages/users/users';
-import {  AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { SignupPage } from './../pages/signup/signup';
 import { LoginPage } from '../pages/login/login';
 
-import { AngularFireModule, FirebaseAppConfig } from 'angularfire2';
 import { UserProvider } from '../providers/user/user';
 import { AuthProvider } from '../providers/auth/auth';
+
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireModule, FirebaseAppConfig } from 'angularfire2';
+import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 
 export const firebaseAppConfig: FirebaseAppConfig = {
   apiKey: "AIzaSyBbqrqNKEsBrA7ixJ355uT_39XMooliE4Y",
@@ -36,11 +36,10 @@ export const firebaseAppConfig: FirebaseAppConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseAppConfig),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireDatabaseModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -55,7 +54,8 @@ export const firebaseAppConfig: FirebaseAppConfig = {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     UserProvider,
-    AuthProvider
+    AuthProvider,
+    AngularFireDatabase
   ]
 })
 export class AppModule {}

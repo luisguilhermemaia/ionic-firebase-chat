@@ -1,14 +1,21 @@
+import { User } from './../../models/user.model';
+import { UserCredentials } from '../../models/user.model';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { BaseProvider } from '../base/base';
 
 @Injectable()
-export class AuthProvider {
-
-  constructor(public auth: AngularFireAuth) {}
+export class AuthProvider extends BaseProvider{
   
-  createAuthUser({email, password}: {email: string, password: string}): Promise<any> {
-    return this.auth.auth.createUserWithEmailAndPassword(email, password);
+  constructor(public auth: AngularFireAuth) {
+    super();
+  }
+  
+  createAuthUser(user: UserCredentials): Promise<any> {
+    const { email, password } = user;
+    return this.auth.auth.createUserWithEmailAndPassword(email, password)
+      .catch(this.handlePromiseError);
   }
 
 }

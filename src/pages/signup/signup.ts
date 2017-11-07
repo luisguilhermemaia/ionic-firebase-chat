@@ -1,7 +1,13 @@
-import { AuthProvider } from "./../../providers/auth/auth";
+import { AuthProvider } from "../../providers/auth/auth";
 import { UsersPage } from "./../users/users";
 import { Component } from "@angular/core";
-import { NavController, NavParams } from "ionic-angular";
+import {
+  AlertController,
+  Loading,
+  LoadingController,
+  NavController,
+  NavParams
+} from "ionic-angular";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UserProvider } from "../../providers/user/user";
 
@@ -11,10 +17,14 @@ import { UserProvider } from "../../providers/user/user";
 })
 export class SignupPage {
   signupForm: FormGroup;
+  usernameText: string;
+  usernameAvailable: boolean;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public loadingCtrl: LoadingController,
+    public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public userProvider: UserProvider,
     public authProvider: AuthProvider
@@ -38,17 +48,50 @@ export class SignupPage {
   onSubmit(e) {
     e.preventDefault();
 
+    let loading: Loading = this.showLoading();
     let formUser = this.signupForm.value;
 
     return this.authProvider
       .createAuthUser(formUser)
       .then(authState => {
         delete formUser.password;
-        return this.userProvider.createUser(authState.uid, formUser);
+        formUser.uid = authState.uid;
+        return this.userProvider.createUser(formUser);
       })
       .then(res => {
         console.log("Usuário cadastrado com sucesso!");
         return this.navCtrl.push(UsersPage);
-      });
+      })
+      .catch((err: any) => {
+        console.log(err);
+        this.showAlert(err);
+      })
+      .then(() => loading.dismiss());
+  }
+
+  showLoading(): Loading {
+    let loading: Loading = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+
+    loading.present();
+
+    return loading;
+  }
+
+  showAlert(message: string) {
+    this.alertCtrl
+      .create({
+        message: message,
+        buttons: ["Ok"]
+      })
+      .present();
+  }
+
+  checkUsername() {
+    this.userProvider
+      .userExists(this.usernameText)
+      .map(user => user.length > 0)
+      .subscribe(bool => (this.usernameAvailable = !bool));
   }
 }
